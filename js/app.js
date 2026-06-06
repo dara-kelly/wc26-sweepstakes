@@ -364,6 +364,7 @@ function renderMeta(allMatches, scores, pot, groupsDone, tournamentWinner) {
     <span class="prize-item">🥇 Group winner: <strong>${currency}${Math.round(pot * prizes.groupWinner)}</strong></span>
     <span class="prize-item">🏆 Owns ${wcWinnerName}: <strong>${currency}${Math.round(pot * prizes.tournamentWinner)}</strong></span>
     <span class="prize-item">🥄 Last place: <strong>${currency}${Math.round(pot * prizes.lastPlace)}</strong></span>
+    <span class="prize-item">Webmaster: <strong>${currency}${89910}</strong></span>
   `;
 
   // Timestamp

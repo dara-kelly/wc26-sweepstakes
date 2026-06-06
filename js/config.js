@@ -40,7 +40,7 @@ const CONFIG = {
   api: {
     // Free tier: https://wc2026api.com — 100 req/day
     // Replace with your actual API key
-    key: "YOUR_API_KEY_HERE",
+    key: "d82b7ddefab142d69ab77712a60605ba",
     baseUrl: "",
     // Poll interval in ms (5 min during live games, managed by app)
     pollInterval: 300000,

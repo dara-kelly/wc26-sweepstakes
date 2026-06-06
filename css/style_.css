@@ -20,10 +20,9 @@
   --font-cond: 'Barlow Condensed', sans-serif;
 }
 
-html { 
-  scroll-behavior: smooth; 
-  font-size: 100%; /* Changed from 125% to prevent oversized mobile elements */
-}
+html { scroll-behavior: smooth; 
+    font-size: 125%;
+  }
 
 body {
   font-family: var(--font-body);
@@ -105,8 +104,6 @@ nav {
   display: flex;
   padding: 0 24px;
   gap: 0;
-  overflow-x: auto; /* Allows horizontal scrolling for tabs on mobile instead of breaking */
-  -webkit-overflow-scrolling: touch;
 }
 nav a {
   padding: 12px 16px;
@@ -125,7 +122,7 @@ nav a:hover { color: var(--text); background: #161616; }
 nav a.active { color: var(--gold); border-bottom-color: var(--gold); background: #14110000; }
 
 /* ---- LAYOUT ---- */
-.layout { display: flex; min-height: calc(100vh - 120px); flex-direction: row; }
+.layout { display: flex; min-height: calc(100vh - 120px); }
 .sidebar { width: 210px; min-width: 210px; background: #0d0d0d; border-right: 1px solid var(--border); padding: 16px 12px; }
 .main { flex: 1; padding: 20px 24px; min-width: 0; }
 .right-rail { width: 190px; min-width: 190px; background: #0d0d0d; border-left: 1px solid var(--border); padding: 16px 12px; }
@@ -171,7 +168,6 @@ nav a.active { color: var(--gold); border-bottom-color: var(--gold); background:
   display: flex;
   gap: 24px;
   margin-top: 10px;
-  flex-wrap: wrap;
 }
 .prize-item { font-size: 13px; color: #555; }
 .prize-item strong { color: var(--gold); }
@@ -485,42 +481,6 @@ footer a { color: #3a3a3a; text-decoration: none; }
 .breakdown-pts { color: var(--gold); font-family: var(--font-cond); font-weight: 700; font-size: 15px; }
 .breakdown-live { color: var(--red); font-size: 10px; margin-left: 4px; }
 
-/* ---- MOBILE MEDIA QUERIES ---- */
 @media (max-width: 900px) {
   .sidebar, .right-rail { display: none; }
-  .layout { flex-direction: column; }
-  .main { padding: 16px 12px; }
-}
-
-@media (max-width: 600px) {
-  header { padding: 12px 16px; }
-  .logo { font-size: 22px; }
-  
-  /* Hero section compression */
-  .hero { flex-direction: column; align-items: flex-start; gap: 14px; padding: 16px; }
-  .hero-pot { width: 100%; }
-  .pot-amount { font-size: 40px; }
-  .hero-stat { width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; }
-  .hero-stat .lbl { margin-top: 0; }
-  
-  /* Leaderboard Grid transformation for mobile viewports */
-  .lb-head, .lb-row {
-    grid-template-columns: 30px 1fr 60px 50px;
-    padding: 10px 8px;
-  }
-  /* Hide secondary metric columns to save layout width */
-  .lb-head :nth-child(5), .lb-row :nth-child(5) { display: none; } 
-  .player-name { font-size: 13px; }
-  .pts-total { font-size: 18px; }
-  
-  /* Game cards transformation */
-  .game-card { flex-wrap: wrap; justify-content: space-between; padding: 12px; }
-  .game-time { width: 100%; text-align: left; border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 4px; }
-  .game-body { width: 100%; justify-content: space-between; order: 2; }
-  .game-meta { width: auto; order: 3; }
-  .game-team { min-width: auto; font-size: 13px; }
-  .game-score { font-size: 20px; min-width: 40px; }
-  
-  /* Rules Grid adjustments */
-  .rules-grid { grid-template-columns: 1fr; }
 }
