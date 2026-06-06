@@ -12,22 +12,14 @@ const FLAGS = {
   "Argentina": "🇦🇷", "France": "🇫🇷", "Brazil": "🇧🇷", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
   "Germany": "🇩🇪", "Spain": "🇪🇸", "Portugal": "🇵🇹", "Netherlands": "🇳🇱",
   "Belgium": "🇧🇪", "Uruguay": "🇺🇾", "Croatia": "🇭🇷", "Denmark": "🇩🇰",
-  "Switzerland": "🇨🇭", "United States": "🇺🇸", "USA": "🇺🇸", "Mexico": "🇲🇽", "Canada": "🇨🇦",
+  "Switzerland": "🇨🇭", "United States": "🇺🇸", "Mexico": "🇲🇽", "Canada": "🇨🇦",
   "Morocco": "🇲🇦", "Senegal": "🇸🇳", "Japan": "🇯🇵", "South Korea": "🇰🇷",
   "Australia": "🇦🇺", "Ecuador": "🇪🇨", "Colombia": "🇨🇴", "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
   "Serbia": "🇷🇸", "Poland": "🇵🇱", "Iran": "🇮🇷", "Saudi Arabia": "🇸🇦",
   "Ghana": "🇬🇭", "Tunisia": "🇹🇳", "Costa Rica": "🇨🇷", "Qatar": "🇶🇦",
   "Cameroon": "🇨🇲", "New Zealand": "🇳🇿", "Ivory Coast": "🇨🇮",
   "Guatemala": "🇬🇹", "Bolivia": "🇧🇴", "Albania": "🇦🇱",
-  // Added
-  "Paraguay": "🇵🇾", "Uzbekistan": "🇺🇿", "Norway": "🇳🇴", "Sweden": "🇸🇪",
-  "Jordan": "🇯🇴", "Panama": "🇵🇦", "Cape Verde Islands": "🇨🇻", "Egypt": "🇪🇬",
-  "Congo DR": "🇨🇩", "Czechia": "🇨🇿", "Czech Republic": "🇨🇿",
-  "South Africa": "🇿🇦", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Iraq": "🇮🇶",
-  "Bosnia-Herzegovina": "🇧🇦", "Bosnia and Herzegovina": "🇧🇦",
-  "Algeria": "🇩🇿", "Austria": "🇦🇹",
 };
-
 
 function flag(team) {
   return FLAGS[team] || "🏳";
@@ -90,63 +82,57 @@ function closeModal() {
   document.getElementById("modal-overlay").classList.add("hidden");
 }
 
-// ---- Shared: compute eliminated teams from match list ----
-function getEliminatedTeams() {
-  const eliminated = new Set();
-  for (const m of matches) {
-    if (m.status !== "completed" && m.status !== "FT") continue;
-    if (m.round === "Group Stage") continue;
-    const homeGoals = m.homeScore ?? 0;
-    const awayGoals = m.awayScore ?? 0;
-    const homePens  = m.penaltiesHomeScore ?? 0;
-    const awayPens  = m.penaltiesAwayScore ?? 0;
-    let loser;
-    if (homeGoals !== awayGoals) {
-      loser = homeGoals < awayGoals ? m.homeTeam : m.awayTeam;
-    } else {
-      loser = homePens < awayPens ? m.homeTeam : m.awayTeam;
-    }
-    if (loser) eliminated.add(loser);
-  }
-  return eliminated;
-}
-
-// ---- Render leaderboard — table rows (desktop) + cards (mobile) ----
+// ---- Render leaderboard ----
 function renderLeaderboard(scores, groupsDone) {
-  const container    = document.getElementById("leaderboard-rows");
-  const rankClass    = ["", "p1", "p2", "p3"];
+  const container = document.getElementById("leaderboard-rows");
+  const rankClass = ["", "p1", "p2", "p3"];
   const rankNumClass = ["", "r1", "r2", "r3"];
-  const cardAccent   = ["", "#c8a600", "#888888", "#cd7f32"];
-  const eliminated   = getEliminatedTeams();
 
   container.innerHTML = scores.map((s, i) => {
-    const rank  = i + 1;
-    const prev  = lastScores ? lastScores.find(p => p.player === s.player) : null;
+    const rank = i + 1;
+    const prev = lastScores ? lastScores.find(p => p.player === s.player) : null;
     const delta = prev != null ? s.total - prev.total : null;
-
     const changeHtml = delta === null ? "" :
       delta > 0 ? `<span class="pts-change up">▲ +${delta}</span>` :
       delta < 0 ? `<span class="pts-change dn">▼ ${delta}</span>` :
-                  `<span class="pts-change zero">— 0</span>`;
+      `<span class="pts-change zero">— 0</span>`;
 
-    const cardChangeHtml = delta === null ? "" :
-      delta > 0 ? `<div class="card-change up">▲ +${delta}</div>` :
-      delta < 0 ? `<div class="card-change dn">▼ ${delta}</div>` :
-                  `<div class="card-change zero">—</div>`;
+    // Determine which teams are still active vs eliminated
+    const allTeamsInMatches = new Set(matches.flatMap(m => [m.homeTeam, m.awayTeam]));
+    const eliminatedTeams = new Set();
+    // A team is eliminated if it lost a knockout match (and it's completed)
+    for (const m of matches) {
+      if (m.status !== "completed" && m.status !== "FT") continue;
+      if (m.round === "Group Stage") continue;
+      const homeGoals = m.homeScore ?? 0;
+      const awayGoals = m.awayScore ?? 0;
+      const homePens = m.penaltiesHomeScore ?? 0;
+      const awayPens = m.penaltiesAwayScore ?? 0;
+      let loser;
+      if (homeGoals !== awayGoals) {
+        loser = homeGoals < awayGoals ? m.homeTeam : m.awayTeam;
+      } else {
+        loser = homePens < awayPens ? m.homeTeam : m.awayTeam;
+      }
+      if (loser) eliminatedTeams.add(loser);
+    }
 
     const teamPills = s.teams.map(t => {
-      const cls = eliminated.has(t) ? "team-pill elim" : "team-pill active";
+      const isElim = eliminatedTeams.has(t);
+      const cls = isElim ? "team-pill elim" : "team-pill active";
       return `<span class="${cls}">${flag(t)} ${t}</span>`;
     }).join("");
 
+    const prizeHtml = s.prize
+      ? `<div class="prize-val" title="${s.prizeLabel || ""}">${s.prize}</div>`
+      : `<div class="prize-val none">—</div>`;
+
     const wcWinner = s.ownsTournamentWinner
-      ? `<span style="margin-left:4px;font-size:12px" title="Owns the WC winner">🏆</span>` : "";
+      ? `<span style="margin-left:4px;font-size:12px" title="Owns the World Cup winner!">🏆</span>`
+      : "";
 
-    const modalData = JSON.stringify(s).replace(/"/g, '&quot;');
-    const accentColor = cardAccent[rank] || "var(--border)";
-
-    const tableRow = `
-      <div class="lb-row ${rankClass[rank] || ""}" onclick="openModal(${modalData})">
+    return `
+      <div class="lb-row ${rankClass[rank] || ""}" onclick="openModal(${JSON.stringify(s).replace(/"/g, '&quot;')})">
         <span class="rank ${rankNumClass[rank] || ""}">${rank}</span>
         <div>
           <div class="player-name">${s.player}${wcWinner}</div>
@@ -154,30 +140,8 @@ function renderLeaderboard(scores, groupsDone) {
         </div>
         <div class="pts-total">${s.total}<br><small>pts</small></div>
         <div>${changeHtml}</div>
-        <div>${s.prize
-          ? `<div class="prize-val" title="${s.prizeLabel || ""}">${s.prize}</div>`
-          : `<div class="prize-val none">—</div>`}
-        </div>
+        ${prizeHtml}
       </div>`;
-
-    const card = `
-      <div class="lb-row-card" style="border-left-color:${accentColor}" onclick="openModal(${modalData})">
-        <div class="card-top">
-          <div class="card-rank ${rankNumClass[rank] || ""}">${rank}</div>
-          <div class="card-player">
-            <div class="card-name">${s.player}${wcWinner}</div>
-            ${s.prize ? `<div class="card-prize">${s.prize} — ${s.prizeLabel}</div>` : ""}
-          </div>
-          <div class="card-pts-block">
-            <div class="card-pts">${s.total}</div>
-            <div class="card-pts-label">pts</div>
-            ${cardChangeHtml}
-          </div>
-        </div>
-        <div class="card-bottom">${teamPills}</div>
-      </div>`;
-
-    return tableRow + card;
   }).join("");
 }
 
@@ -303,10 +267,26 @@ function renderRules() {
 // ---- Render sidebar ----
 function renderSidebar(allMatches) {
   const allTeams = new Set(Object.values(CONFIG.players).flat());
-  const eliminatedTeams = getEliminatedTeams();
+  const eliminatedTeams = new Set();
+
+  for (const m of allMatches) {
+    if (m.status !== "completed" && m.status !== "FT") continue;
+    if (m.round === "Group Stage") continue;
+    const homeGoals = m.homeScore ?? 0;
+    const awayGoals = m.awayScore ?? 0;
+    const homePens = m.penaltiesHomeScore ?? 0;
+    const awayPens = m.penaltiesAwayScore ?? 0;
+    let loser;
+    if (homeGoals !== awayGoals) {
+      loser = homeGoals < awayGoals ? m.homeTeam : m.awayTeam;
+    } else {
+      loser = homePens < awayPens ? m.homeTeam : m.awayTeam;
+    }
+    if (loser && allTeams.has(loser)) eliminatedTeams.add(loser);
+  }
 
   const remaining = [...allTeams].filter(t => !eliminatedTeams.has(t));
-  const elim = [...allTeams].filter(t => eliminatedTeams.has(t));
+  const elim = [...eliminatedTeams];
 
   document.getElementById("sidebar-teams").innerHTML = remaining.map(t => `
     <div class="team-row">
