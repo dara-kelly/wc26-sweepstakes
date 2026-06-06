@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorldDraw 2026 — Queepsferstakestu</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker-inner" id="ticker-text">
+    ⚽ WORLD CUP 2026 SWEEPSTAKES &nbsp;•&nbsp; USA / CANADA / MEXICO &nbsp;•&nbsp; LOADING LIVE DATA...
+  </span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">⚽ QUEEPSFERSTAKESTU<span>WORLD CUP · 2026</span></div>
+  <div class="header-right">
+    <span class="badge" id="badge-players">— Players</span>
+    <span class="badge green">✓ Verified</span>
+    <span class="badge live" id="badge-live" style="display:none">● Live</span>
+    <span class="badge" id="badge-round">Loading...</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="active" onclick="showTab('leaderboard',this)">🏆 Leaderboard</a>
+  <a href="#" onclick="showTab('fixtures',this)">📅 Fixtures</a>
+  <a href="#" onclick="showTab('rules',this)">📜 Rules</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-pot">
+    <div class="pot-label">Total Prize Pool</div>
+    <div class="pot-amount" id="pot-amount">—</div>
+    <div class="prize-strip" id="prize-strip"></div>
+  </div>
+  <div class="hero-stat">
+    <div class="num" id="stat-players">—</div>
+    <div class="lbl">Players</div>
+  </div>
+  <div class="hero-stat">
+    <div class="num" id="stat-played">—</div>
+    <div class="lbl">Played</div>
+  </div>
+  <div class="hero-stat">
+    <div class="num live-num" id="stat-live" style="display:none">—</div>
+    <div class="lbl" id="stat-live-lbl" style="display:none">Live now</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-hd">Remaining Teams</div>
+      <div id="sidebar-teams"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-hd">Eliminated</div>
+      <div id="sidebar-elim"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- TAB: LEADERBOARD -->
+    <div id="tab-leaderboard">
+      <!-- Live games -->
+      <div id="live-section" style="display:none">
+        <div class="section-hd">
+          <span class="section-title">Live Now</span>
+          <span class="badge live">● Live</span>
+        </div>
+        <div class="games-list" id="live-games"></div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="section-hd">
+        <span class="section-title">Leaderboard</span>
+        <span class="updated" id="updated-at"></span>
+      </div>
+      <div class="leaderboard">
+        <div class="lb-head">
+          <span>#</span><span>Player</span>
+          <span style="text-align:right">Points</span>
+          <span style="text-align:right">Change</span>
+          <span style="text-align:right">Prize</span>
+        </div>
+        <div id="leaderboard-rows">
+          <div class="loading-screen">
+            <div class="spinner"></div>
+            <div class="loading-text">Calculating scores...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: FIXTURES -->
+    <div id="tab-fixtures" style="display:none">
+      <div class="section-hd"><span class="section-title">All Fixtures</span></div>
+      <div id="all-fixtures"></div>
+    </div>
+
+    <!-- TAB: RULES -->
+    <div id="tab-rules" style="display:none">
+      <div class="rules-box">
+        <div class="section-title">⚡ Points Scoring System</div>
+        <div class="rules-grid" id="rules-grid"></div>
+      </div>
+      <div style="background:#111;border:1px solid #222;border-radius:4px;padding:16px;margin-bottom:20px">
+        <div class="section-title" style="margin-bottom:12px">👥 Player Assignments</div>
+        <div id="assignments-table"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT RAIL -->
+  <div class="right-rail">
+    <div class="rail-box promo" id="hot-streak-box" style="display:none">
+      <div class="rail-title red">🔥 Hot Streak</div>
+      <div class="rail-text" id="hot-streak-text">—</div>
+    </div>
+    <div class="rail-box info">
+      <div class="rail-title green">Next games</div>
+      <div id="next-fixtures-rail" style="font-size:12px;color:#666;line-height:2">—</div>
+    </div>
+    <div class="rail-box special">
+      <div class="rail-title purple">🎲 Scoring reminder</div>
+      <div class="rail-text">+2 points if your team qualifies for the knockouts!</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="trust-strip">
+    <span class="trust-badge">✓ Secure</span>
+    <span class="trust-badge">✓ Fair</span>
+    <span class="trust-badge">✓ Live</span>
+    <span class="trust-badge">18+</span>
+    <span class="trust-badge">🔒 SSL</span>
+  </div>
+  <div><a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Responsible Gambling</a></div>
+  <div style="margin-top:4px;color:#1e1e1e">This is a private sweepstakes for entertainment purposes only. Not a licensed gambling operation. Admin decisions are final. Please play responsibly.</div>
+</footer>
+
+<!-- BREAKDOWN MODAL -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modal-name">Player</h2>
+    <div class="modal-sub" id="modal-sub">Total: — pts</div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
