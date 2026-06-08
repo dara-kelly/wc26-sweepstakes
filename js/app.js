@@ -1,9 +1,4 @@
-// ============================================================
-// APP.JS — UI rendering, polling loop, tab switching
-// Depends on: config.js, engine.js, api.js
-// ============================================================
-
-// ---- State ----
+// ============================================================ APP.JS — UI rendering, polling loop, tab switching Depends on: config.js, engine.js, api.js ============================================================ ---- State ----
 let lastScores = null;       // previous poll's scores, for change calculation
 let pollTimer = null;
 let matches = [];
@@ -25,7 +20,7 @@ const FLAGS = {
   "Congo DR": "🇨🇩", "Czechia": "🇨🇿", "Czech Republic": "🇨🇿",
   "South Africa": "🇿🇦", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Iraq": "🇮🇶",
   "Bosnia-Herzegovina": "🇧🇦", "Bosnia and Herzegovina": "🇧🇦",
-  "Algeria": "🇩🇿", "Austria": "🇦🇹",
+  "Algeria": "🇩🇿", "Austria": "🇦🇹", "Turkey": "🇹🇷 ",
 };
 
 
