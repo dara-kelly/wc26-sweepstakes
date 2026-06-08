@@ -129,7 +129,7 @@ const API = (() => {
     if (!res.ok) throw new Error(`openfootball fetch failed: HTTP ${res.status}`);
     const data = await res.json();
     const matches = data.matches || [];
-    return matches.map(normaliseFDO);
+    return matches.map(normaliseOpenfootball);
   }
 
   // ---- Mock data for development (no key needed) ----
