@@ -416,6 +416,7 @@ async function poll() {
     renderMeta(matches, scores, pot, groupsDone, tournamentWinner);
     renderLeaderboard(scores, groupsDone);
     renderLiveGames(liveMatches);
+    renderFixtures(matches);
     renderSidebar(matches);
     renderRail(scores, matches);
     renderTicker(matches, scores);
