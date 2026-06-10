@@ -202,6 +202,18 @@ function renderLiveGames(liveMatches) {
   `).join("");
 }
 
+function getOwner(team) {
+  return Object.entries(CONFIG.players).find(([, teams]) => teams.includes(team))?.[0] || null;
+}
+
+function formatKickoff(utcDate) {
+  if (!utcDate) return null;
+  const d = new Date(utcDate);
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
+       + " · "
+       + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
 // ---- Render all fixtures tab ----
 function renderFixtures(allMatches) {
   const container = document.getElementById("all-fixtures");
@@ -229,23 +241,28 @@ function renderFixtures(allMatches) {
         return `
           <div class="game-card ${isLive ? "live" : ""}">
             <div class="game-time ${isLive ? "live-t" : ""}">${isLive ? "LIVE" : isDone ? "FT" : "—"}</div>
-            <div class="game-body">
-              <div class="game-team home ${isDone && (m.homeScore > m.awayScore) ? "winner" : ""}">
-                ${flag(m.homeTeam)} ${m.homeTeam}
-              </div>
-              ${isUp
-                ? `<div class="game-score upcoming">vs</div>`
-                : `<div class="game-score ${isLive ? "live" : ""}">${m.homeScore} – ${m.awayScore}</div>`
-              }
-              <div class="game-team away ${isDone && (m.awayScore > m.homeScore) ? "winner" : ""}">
-                ${flag(m.awayTeam)} ${m.awayTeam}
-              </div>
-            </div>
+               <div class="game-body" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px">
+                 <div class="game-team home ${isDone && (m.homeScore > m.awayScore) ? "winner" : ""}" style="text-align:right">
+                   ${flag(m.homeTeam)} ${m.homeTeam}
+                   ${getOwner(m.homeTeam) ? `<div style="font-size:15px;color:#fafafa;margin-top:2px">${getOwner(m.homeTeam)}</div>` : ""}
+                 </div>
+                 ${isUp
+                   ? `<div class="game-score upcoming" style="text-align:center">vs</div>`
+                   : `<div class="game-score ${isLive ? "live" : ""}" style="text-align:center">${m.homeScore} – ${m.awayScore}</div>`
+                 }
+                 <div class="game-team away ${isDone && (m.awayScore > m.homeScore) ? "winner" : ""}" style="text-align:left">
+                   ${flag(m.awayTeam)} ${m.awayTeam}
+                   ${getOwner(m.awayTeam) ? `<div style="font-size:15px;color:#fafafa;margin-top:2px">${getOwner(m.awayTeam)}</div>` : ""}
+                 </div>
+               </div>
             <div class="game-meta">
               ${isLive ? `<div class="live-dot">● LIVE</div>` : ""}
               ${isDone && m.penaltiesHomeScore != null
                 ? `<div style="font-size:10px;color:#555">Pens: ${m.penaltiesHomeScore}–${m.penaltiesAwayScore}</div>`
                 : ""}
+                  ${!isDone && !isLive && formatKickoff(m.utcDate)
+                  ? `<div style="font-size:10px;color:#aaa;margin-top:3px">${formatKickoff(m.utcDate)}</div>`
+                  : ""}
             </div>
           </div>`;
       }).join("")}

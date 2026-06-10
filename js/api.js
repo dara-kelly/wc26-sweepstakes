@@ -192,7 +192,9 @@ const API = (() => {
         console.info("[API] Fetching via Cloudflare Worker proxy");
         const res = await fetch(`${baseUrl}/matches`);
         if (!res.ok) throw new Error(`Worker returned HTTP ${res.status}`);
-        return await res.json();
+        const data = await res.json();
+        const matches = data.matches || [];       // ← extract the array
+        return matches.map(normaliseFDO);         // ← normalise it
       } catch (err) {
         console.warn("[API] Worker fetch failed, falling back:", err.message);
       }
