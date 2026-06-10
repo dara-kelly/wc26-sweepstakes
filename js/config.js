@@ -28,7 +28,7 @@ const CONFIG = {
     "Adrian":   ["Morocco", "Colombia", "Austria", "Ivory Coast", "Bosnia-Herzegovina"],
     "Anna":    ["Argentina", "Uruguay", "Algeria", "Scotland", "Iraq"],
     "Ciaran":   ["England", "United States", "Australia", "Czechia", "South Africa"],
-    "Dara":    ["Spain", "Japan", "Egypt", "Congo DR", "Japan"],
+    "Dara":    ["Spain", "Japan", "Egypt", "Congo DR", "Qatar"],
     "Ellen":     ["Netherlands", "Croatia", "Turkey", "Panama", "Cape Verde Islands"],
     "John":      ["Brazil", "Senegal", "Ecuador", "Sweden", "Jordan"],
     "Hannah":     ["Germany", "Belgium", "Iran", "Norway", "Ghana"],
