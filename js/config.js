@@ -43,7 +43,7 @@ const CONFIG = {
     
   key: "d82b7ddefab142d69ab77712a60605ba",
    // key: "YOUR_API_KEY_HERE",
-    baseUrl: "",
+    baseUrl: "https://wc-26.dazk98.workers.dev/",
     // Poll interval in ms (5 min during live games, managed by app)
     pollInterval: 300000,
   }
