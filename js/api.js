@@ -135,12 +135,12 @@ const API = (() => {
   // ---- Mock data for development (no key needed) ----
   const MOCK_MATCHES = [
     // Group Stage
-    { id:1,  round:"Group Stage", homeTeam:"Argentina",   awayTeam:"Bolivia",      homeScore:3, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:2,  round:"Group Stage", homeTeam:"France",      awayTeam:"Denmark",      homeScore:2, awayScore:1, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:3,  round:"Group Stage", homeTeam:"Brazil",      awayTeam:"Serbia",       homeScore:4, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:4,  round:"Group Stage", homeTeam:"England",     awayTeam:"Iran",         homeScore:0, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:5,  round:"Group Stage", homeTeam:"Germany",     awayTeam:"Japan",        homeScore:2, awayScore:1, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:6,  round:"Group Stage", homeTeam:"Belgium",       awayTeam:"Costa Rica",   homeScore:7, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+    { id:1,  round:"Group Stage", homeTeam:"Mexico",   awayTeam:"South Africa",      homeScore:2, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:2,  round:"Group Stage", homeTeam:"France",      awayTeam:"Denmark",      homeScore:2, awayScore:1, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:3,  round:"Group Stage", homeTeam:"Brazil",      awayTeam:"Serbia",       homeScore:4, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:4,  round:"Group Stage", homeTeam:"England",     awayTeam:"Iran",         homeScore:0, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:5,  round:"Group Stage", homeTeam:"Germany",     awayTeam:"Japan",        homeScore:2, awayScore:1, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:6,  round:"Group Stage", homeTeam:"Belgium",       awayTeam:"Costa Rica",   homeScore:7, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
 //     { id:7,  round:"Group Stage", homeTeam:"Netherlands", awayTeam:"Senegal",      homeScore:2, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
 //     { id:8,  round:"Group Stage", homeTeam:"Portugal",    awayTeam:"Ghana",        homeScore:2, awayScore:3, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
 //     { id:9,  round:"Group Stage", homeTeam:"Argentina",   awayTeam:"Mexico",       homeScore:2, awayScore:0, status:"completed", penaltiesHomeScore:null, penaltiesAwayScore:null },
@@ -170,8 +170,8 @@ const API = (() => {
 //     // Round of 16 — two live, two upcoming
 //     { id:40, round:"Round of 16", homeTeam:"Argentina",   awayTeam:"France",       homeScore:2, awayScore:1, status:"live",      penaltiesHomeScore:null, penaltiesAwayScore:null },
 //     { id:41, round:"Round of 16", homeTeam:"Brazil",      awayTeam:"England",      homeScore:1, awayScore:0, status:"live",      penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:42, round:"Round of 16", homeTeam:"Germany",     awayTeam:"Spain",        homeScore:null, awayScore:null, status:"upcoming", penaltiesHomeScore:null, penaltiesAwayScore:null },
-     { id:43, round:"Round of 16", homeTeam:"Netherlands", awayTeam:"Portugal",     homeScore:null, awayScore:null, status:"upcoming", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:42, round:"Round of 16", homeTeam:"Germany",     awayTeam:"Spain",        homeScore:null, awayScore:null, status:"upcoming", penaltiesHomeScore:null, penaltiesAwayScore:null },
+     //{ id:43, round:"Round of 16", homeTeam:"Netherlands", awayTeam:"Portugal",     homeScore:null, awayScore:null, status:"upcoming", penaltiesHomeScore:null, penaltiesAwayScore:null },
   ];
 
   // ---- Main fetch function ----
@@ -184,13 +184,21 @@ const API = (() => {
       console.info("[API] No key set — using mock data");
       return MOCK_MATCHES;
     }
+    // 4. openfootball fallback (no live scores, but completed results)
+    try {
+      console.info("[API] Fetching from openfootball (no live scores)");
+      return await fetchFromOpenfootball();
+    } catch (err) {
+      console.warn("[API] openfootball failed:", err.message, "— using mock data");
+    }
+
 
     // 2. Cloudflare Worker proxy (if baseUrl overridden to worker URL)
     const isWorker = baseUrl && !baseUrl.includes("football-data.org") && !baseUrl.includes("raw.githubusercontent");
     if (isWorker) {
       try {
         console.info("[API] Fetching via Cloudflare Worker proxy");
-        const res = await fetch(`${baseUrl}/matches`);
+        const res = await fetch(baseUrl);
         if (!res.ok) throw new Error(`Worker returned HTTP ${res.status}`);
         const data = await res.json();
         const matches = data.matches || [];       // ← extract the array
@@ -199,7 +207,6 @@ const API = (() => {
         console.warn("[API] Worker fetch failed, falling back:", err.message);
       }
     }
-
     // 3. football-data.org directly
     try {
       console.info("[API] Fetching from football-data.org");
@@ -208,13 +215,6 @@ const API = (() => {
       console.warn("[API] football-data.org failed:", err.message, "— trying openfootball fallback");
     }
 
-    // 4. openfootball fallback (no live scores, but completed results)
-    try {
-      console.info("[API] Fetching from openfootball (no live scores)");
-      return await fetchFromOpenfootball();
-    } catch (err) {
-      console.warn("[API] openfootball failed:", err.message, "— using mock data");
-    }
 
     // 5. Last resort: mock
     return MOCK_MATCHES;
