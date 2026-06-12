@@ -405,6 +405,7 @@ function renderMeta(allMatches, scores, pot, groupsDone, tournamentWinner) {
     `Updated ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 }
 
+
 // ---- Ticker ----
 function renderTicker(allMatches, scores) {
   const liveMatches = allMatches.filter(m => ["live","1H","2H","HT"].includes(m.status));
