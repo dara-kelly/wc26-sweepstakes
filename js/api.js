@@ -184,13 +184,6 @@ const API = (() => {
       console.info("[API] No key set — using mock data");
       return MOCK_MATCHES;
     }
-    // 4. openfootball fallback (no live scores, but completed results)
-    try {
-      console.info("[API] Fetching from openfootball (no live scores)");
-      return await fetchFromOpenfootball();
-    } catch (err) {
-      console.warn("[API] openfootball failed:", err.message, "— using mock data");
-    }
 
 
     // 2. Cloudflare Worker proxy (if baseUrl overridden to worker URL)
@@ -215,6 +208,13 @@ const API = (() => {
       console.warn("[API] football-data.org failed:", err.message, "— trying openfootball fallback");
     }
 
+    // 4. openfootball fallback (no live scores, but completed results)
+    try {
+      console.info("[API] Fetching from openfootball (no live scores)");
+      return await fetchFromOpenfootball();
+    } catch (err) {
+      console.warn("[API] openfootball failed:", err.message, "— using mock data");
+    }
 
     // 5. Last resort: mock
     return MOCK_MATCHES;
